@@ -24,6 +24,33 @@ At the wire level the browser dials a WebSocket to the agent; at the MCP
 protocol level the browser is the server (handles `tools/list`,
 `tools/call`, `prompts/list`, etc.).
 
+## How this differs from browser-automation MCP servers
+
+If you've seen packages like [`@playwright/mcp`][playwright-mcp],
+[`BrowserMCP/mcp`][browser-mcp], [`browserbase/mcp-server-browserbase`][browserbase],
+or [`chrome-devtools-mcp`][chrome-devtools-mcp], those go in the **opposite
+direction** from this one.
+
+|                            | Browser-automation MCP servers          | `@teatak/mcp-server-browser`                                         |
+| -------------------------- | --------------------------------------- | -------------------------------------------------------------------- |
+| Where the MCP server runs  | A local Node process (or cloud)         | The browser page itself                                              |
+| Who defines the tools      | The package author (fixed set)          | You — the page registers its own tools                               |
+| Browser's role             | Target of automation (driven by agent)  | Active producer of capabilities                                      |
+| Typical tools              | `navigate`, `click`, `screenshot`, …    | Anything your page can do — UI rendering, page-scoped APIs, etc.     |
+| Bridge                     | Chrome extension / CDP / Playwright     | `new WebSocket(...)` from the page                                   |
+
+Short version: those packages give **an agent a browser**. This package
+lets **your browser app give an agent custom tools**.
+
+The two patterns compose — you can use Playwright MCP to let an agent drive
+a page **and** have the same page expose its own MCP server (via this
+package) for higher-level domain operations.
+
+[playwright-mcp]: https://github.com/microsoft/playwright-mcp
+[browser-mcp]: https://github.com/BrowserMCP/mcp
+[browserbase]: https://github.com/browserbase/mcp-server-browserbase
+[chrome-devtools-mcp]: https://github.com/ChromeDevTools/chrome-devtools-mcp
+
 ## Install
 
 ```sh
