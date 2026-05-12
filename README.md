@@ -81,6 +81,113 @@ server.registerTool({
 server.connect();
 ```
 
+## The other side — a minimal Go agent
+
+The snippet above is only half the picture. Here's the matching MCP
+client side — a Go program that accepts the WebSocket from the browser
+and drives it over plain JSON-RPC 2.0. No external MCP library required;
+the only dependency is `gorilla/websocket`.
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/websocket"
+)
+
+type rpcMessage struct {
+	JSONRPC string          `json:"jsonrpc"`
+	ID      json.RawMessage `json:"id,omitempty"`
+	Method  string          `json:"method,omitempty"`
+	Params  json.RawMessage `json:"params,omitempty"`
+	Result  json.RawMessage `json:"result,omitempty"`
+	Error   *struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	} `json:"error,omitempty"`
+}
+
+// Single-flight roundtrip — sends one request and reads the next frame as
+// its response. For concurrent calls, track pending requests by `id` in a
+// sync.Map and dispatch from a dedicated read loop.
+func roundtrip(conn *websocket.Conn, id int, method string, params any) (json.RawMessage, error) {
+	p, _ := json.Marshal(params)
+	idRaw, _ := json.Marshal(id)
+	if err := conn.WriteJSON(rpcMessage{
+		JSONRPC: "2.0", ID: idRaw, Method: method, Params: p,
+	}); err != nil {
+		return nil, err
+	}
+	var resp rpcMessage
+	if err := conn.ReadJSON(&resp); err != nil {
+		return nil, err
+	}
+	if resp.Error != nil {
+		return nil, fmt.Errorf("rpc %d: %s", resp.Error.Code, resp.Error.Message)
+	}
+	return resp.Result, nil
+}
+
+var upgrader = websocket.Upgrader{
+	// Tighten in production: pin Origin and validate a session token.
+	CheckOrigin: func(r *http.Request) bool { return true },
+}
+
+func main() {
+	http.HandleFunc("/mcp/ws", func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		defer conn.Close()
+
+		// 1. Handshake.
+		if _, err := roundtrip(conn, 1, "initialize", map[string]any{
+			"protocolVersion": "2025-03-26",
+			"clientInfo":      map[string]any{"name": "demo-agent", "version": "0.1"},
+			"capabilities":    map[string]any{},
+		}); err != nil {
+			log.Printf("initialize: %v", err)
+			return
+		}
+
+		// 2. Discover what the page exposes.
+		tools, err := roundtrip(conn, 2, "tools/list", struct{}{})
+		if err != nil {
+			log.Printf("tools/list: %v", err)
+			return
+		}
+		log.Printf("browser exposes: %s", tools)
+
+		// 3. Invoke one.
+		result, err := roundtrip(conn, 3, "tools/call", map[string]any{
+			"name":      "demo.echo",
+			"arguments": map[string]any{"text": "hello from go"},
+		})
+		if err != nil {
+			log.Printf("tools/call: %v", err)
+			return
+		}
+		log.Printf("result: %s", result)
+	})
+
+	log.Println("listening on ws://127.0.0.1:9669/mcp/ws")
+	log.Fatal(http.ListenAndServe("127.0.0.1:9669", nil))
+}
+```
+
+Run this next to the Quick start snippet above: the page dials in, gets
+`initialize`d, and has its `demo.echo` tool called once. From here a
+real agent typically grows a pending-request map keyed by `id` for
+concurrent calls, a hub holding multiple browser sessions (one per tab),
+and a `notifications/tools/list_changed` handler so the tool set can be
+hot-reloaded as the page registers new tools.
+
 ## Authentication
 
 This package is **unopinionated about auth**. The browser's WebSocket
