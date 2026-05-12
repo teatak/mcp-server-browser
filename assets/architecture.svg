@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640">
+  <defs>
+    <marker id="ar-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#57606a"/>
+    </marker>
+    <marker id="ar-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0969da"/>
+    </marker>
+    <style>
+      .h1         { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 38px; font-weight: 600; fill: #0d1117; }
+      .sub        { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 16px; fill: #57606a; }
+      .col-gray   { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 22px; font-weight: 600; fill: #57606a; }
+      .col-blue   { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 22px; font-weight: 600; fill: #0969da; }
+      .meta       { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 13px; fill: #8c959f; }
+      .box-label  { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 600; fill: #0d1117; }
+      .box-sub    { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 13px; fill: #57606a; }
+      .box-sub-bl { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 500; fill: #0969da; }
+      .edge       { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 14px; font-style: italic; fill: #57606a; }
+      .edge-blue  { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 14px; font-style: italic; fill: #0969da; }
+      .caption    { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 500; fill: #0d1117; }
+      .hint       { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 14px; fill: #8c959f; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="640" fill="#ffffff"/>
+
+  <!-- title -->
+  <text x="640" y="85" text-anchor="middle" class="h1">An MCP server that runs in the browser</text>
+  <text x="640" y="115" text-anchor="middle" class="sub">@teatak/mcp-server-browser</text>
+
+  <!-- divider -->
+  <line x1="640" y1="170" x2="640" y2="500" stroke="#d0d7de" stroke-width="1"/>
+
+  <!-- ============ LEFT: conventional ============ -->
+  <text x="320" y="215" text-anchor="middle" class="col-gray">Conventional browser-MCP</text>
+  <text x="320" y="240" text-anchor="middle" class="meta">playwright-mcp · BrowserMCP · browserbase · chrome-devtools-mcp</text>
+
+  <rect x="100" y="295" width="180" height="80" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="190" y="328" text-anchor="middle" class="box-label">Agent</text>
+  <text x="190" y="354" text-anchor="middle" class="box-sub">MCP server (Node)</text>
+
+  <rect x="360" y="295" width="180" height="80" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="450" y="328" text-anchor="middle" class="box-label">Browser</text>
+  <text x="450" y="354" text-anchor="middle" class="box-sub">target of automation</text>
+
+  <line x1="285" y1="335" x2="355" y2="335" stroke="#57606a" stroke-width="2" marker-end="url(#ar-gray)"/>
+  <text x="320" y="324" text-anchor="middle" class="edge">drives</text>
+
+  <text x="320" y="435" text-anchor="middle" class="caption">Give an agent a browser.</text>
+
+  <!-- ============ RIGHT: this package ============ -->
+  <text x="960" y="215" text-anchor="middle" class="col-blue">This package</text>
+  <text x="960" y="240" text-anchor="middle" class="meta">the browser is the MCP server — your page registers the tools</text>
+
+  <rect x="740" y="295" width="180" height="80" rx="10" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+  <text x="830" y="328" text-anchor="middle" class="box-label">Browser</text>
+  <text x="830" y="354" text-anchor="middle" class="box-sub-bl">MCP server (in the page)</text>
+
+  <rect x="1000" y="295" width="180" height="80" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="1090" y="328" text-anchor="middle" class="box-label">Agent</text>
+  <text x="1090" y="354" text-anchor="middle" class="box-sub">MCP client</text>
+
+  <line x1="925" y1="335" x2="995" y2="335" stroke="#0969da" stroke-width="2" marker-end="url(#ar-blue)"/>
+  <text x="960" y="324" text-anchor="middle" class="edge-blue">ws</text>
+
+  <text x="960" y="435" text-anchor="middle" class="caption">Give your browser app an agent.</text>
+
+  <!-- bottom hint -->
+  <text x="640" y="555" text-anchor="middle" class="hint">Same MCP protocol — opposite topology. The MCP "server" role moves to the page.</text>
+</svg>

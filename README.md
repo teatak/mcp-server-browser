@@ -1,5 +1,9 @@
 # @teatak/mcp-server-browser
 
+<p align="center">
+  <img src="assets/architecture.png" alt="An MCP server that runs in the browser — the browser acts as the MCP server, the agent as the MCP client; the opposite of playwright-mcp / browserbase / chrome-devtools-mcp." width="820">
+</p>
+
 An [MCP (Model Context Protocol)][mcp] server that runs **in the browser**.
 
 Register tools and prompts on a web page; expose them to a local MCP client
