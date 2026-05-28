@@ -34,6 +34,7 @@ export interface ToolDefinition {
   name: string;
   description?: string;
   inputSchema?: unknown;
+  _meta?: Record<string, unknown>;
   handler: ToolHandler;
 }
 
@@ -113,6 +114,7 @@ export function createServer(opts: CreateServerOptions): McpBrowserServer {
             name: t.name,
             description: t.description,
             inputSchema: t.inputSchema ?? { type: "object", properties: {} },
+            _meta: t._meta,
           })),
         };
         replyResult(req.id, list);

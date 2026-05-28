@@ -85,6 +85,24 @@ server.registerTool({
 server.connect();
 ```
 
+### Tool metadata
+
+Since `0.0.2`, tool definitions may include MCP's `_meta` extension
+object. It is passed through unchanged in `tools/list`, so clients can carry
+private namespaced metadata without adding non-standard top-level fields.
+
+```ts
+server.registerTool({
+  name: "demo.echo",
+  description: "Echo back whatever the caller passed.",
+  inputSchema: { type: "object", properties: {} },
+  _meta: {
+    "example.com/tier": "lite",
+  },
+  handler: async () => ({ ok: true }),
+});
+```
+
 ## The other side — a minimal Go agent
 
 The snippet above is only half the picture. Here's the matching MCP

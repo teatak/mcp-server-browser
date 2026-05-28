@@ -77,6 +77,7 @@ export interface ToolSpec {
   name: string;
   description?: string;
   inputSchema?: unknown;
+  _meta?: Record<string, unknown>;
 }
 
 export interface ToolsListResult {
